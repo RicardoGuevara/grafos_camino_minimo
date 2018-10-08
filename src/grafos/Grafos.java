@@ -18,6 +18,7 @@ public class Grafos {
      */
     public static void main(String[] args) {
         grafo = new Grafo();
+        Ventana.main(args);
     }
     
     public static Grafo grafo;

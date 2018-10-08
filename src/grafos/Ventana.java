@@ -5,6 +5,13 @@
  */
 package grafos;
 
+import Objetos.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.TrayIcon;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author RICARDO
@@ -25,24 +32,221 @@ public class Ventana extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
+
+        map_panel = new javax.swing.JPanel();
+        options_panel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        map_panel.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mousePressed(java.awt.event.MouseEvent evt)
+            {
+                map_panelMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt)
+            {
+                map_panelMouseReleased(evt);
+            }
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                map_panelMouseClicked(evt);
+            }
+        });
+        map_panel.addKeyListener(new java.awt.event.KeyAdapter()
+        {
+            public void keyTyped(java.awt.event.KeyEvent evt)
+            {
+                map_panelKeyTyped(evt);
+            }
+        });
+
+        javax.swing.GroupLayout map_panelLayout = new javax.swing.GroupLayout(map_panel);
+        map_panel.setLayout(map_panelLayout);
+        map_panelLayout.setHorizontalGroup(
+            map_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 665, Short.MAX_VALUE)
+        );
+        map_panelLayout.setVerticalGroup(
+            map_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 522, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout options_panelLayout = new javax.swing.GroupLayout(options_panel);
+        options_panel.setLayout(options_panelLayout);
+        options_panelLayout.setHorizontalGroup(
+            options_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 178, Short.MAX_VALUE)
+        );
+        options_panelLayout.setVerticalGroup(
+            options_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(map_panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(options_panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addComponent(map_panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(options_panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void map_panelMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_map_panelMouseClicked
+    {//GEN-HEADEREND:event_map_panelMouseClicked
+        clickOnMap(evt.getPoint());
+        //System.out.println(graphs.Graphs.grafo);
+        map_panel.requestFocus(); //para poder detectar los pressed
+    }//GEN-LAST:event_map_panelMouseClicked
+
+    private void map_panelMousePressed(java.awt.event.MouseEvent evt)//GEN-FIRST:event_map_panelMousePressed
+    {//GEN-HEADEREND:event_map_panelMousePressed
+        startConnection(evt.getPoint());
+    }//GEN-LAST:event_map_panelMousePressed
+
+    private void map_panelMouseReleased(java.awt.event.MouseEvent evt)//GEN-FIRST:event_map_panelMouseReleased
+    {//GEN-HEADEREND:event_map_panelMouseReleased
+        endConnection(evt.getPoint());
+    }//GEN-LAST:event_map_panelMouseReleased
+
+    private void map_panelKeyTyped(java.awt.event.KeyEvent evt)//GEN-FIRST:event_map_panelKeyTyped
+    {//GEN-HEADEREND:event_map_panelKeyTyped
+        if(ant_selected!=null)if(evt.getKeyCode()==0)delActualNode(map_panel.getGraphics());
+    }//GEN-LAST:event_map_panelKeyTyped
+
+    //<editor-fold>
+    private void startConnection(Point p)
+    {
+        start = grafos.Grafos.grafo.getNodeAt(p);
+    }
+    
+    private void endConnection(Point p)
+    {
+        end = grafos.Grafos.grafo.getNodeAt(p);
+        if(start!=null && end!=null && (!(start.equals(end))))
+        {
+            grafos.Grafos.grafo.add(new Arco(start,end));
+            drawConnection(map_panel.getGraphics(),start,end);
+        }
+    }
+    
+    private void drawConnection(Graphics g,Vertice s, Vertice e)
+    {
+        g.setColor(Color.BLACK);
+        g.drawLine(s.getCenter().x, s.getCenter().y, e.getCenter().x, e.getCenter().y);
+    }
+    
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="CREAR NODO">
+    
+    private void clickOnMap(Point p)
+    {
+        Vertice<String> n = evaluate_colission_box_point(p);
+        if(n==null) createNode(p);
+        else selectNode(n);
+    }
+    
+    private Vertice evaluate_colission_box_point(Point p)
+    {
+        Vertice<String> n = grafos.Grafos.grafo.getNodeAt(p);
+        if(n!=null) return n;
+        n = grafos.Grafos.grafo.getNodeAt(new Point(p.x-Vertice.diameter/2,p.y-Vertice.diameter/2));
+        if(n!=null) return n;
+        n = grafos.Grafos.grafo.getNodeAt(new Point(p.x-Vertice.diameter/2,p.y+Vertice.diameter/2));
+        if(n!=null) return n;
+        n = grafos.Grafos.grafo.getNodeAt(new Point(p.x+Vertice.diameter/2,p.y-Vertice.diameter/2));
+        if(n!=null) return n;
+        n = grafos.Grafos.grafo.getNodeAt(new Point(p.x+Vertice.diameter/2,p.y+Vertice.diameter/2));
+        return n;
+    }
+    private void createNode(Point p)
+    {
+        p= new Point(p.x-(int)(Vertice.diameter/2),p.y-(int)(Vertice.diameter/2)); //ajusta el punto al centro
+        Vertice n = new Vertice<String>(p,JOptionPane.showInputDialog(map_panel,"Nombre de este punto","Nombre",TrayIcon.MessageType.NONE.ordinal()));
+        if(n.getData()!=null)   //se cancelo la creción del nodo
+        {
+            grafos.Grafos.grafo.add(n);
+            drawPoint(map_panel.getGraphics(),p,Color.RED);
+            drawInfo(map_panel.getGraphics(),n);
+        }
+    }
+    
+    private void selectNode(Vertice n)
+    {
+        if(ant_selected!=null)
+        {
+            drawPoint(map_panel.getGraphics(),ant_selected.getLocation(),Color.RED);
+            drawInfo(map_panel.getGraphics(),ant_selected);
+        }
+        drawPoint(map_panel.getGraphics(),n.getLocation(),Color.BLUE);
+        drawInfo(map_panel.getGraphics(),n);
+        ant_selected = n;
+    }
+    
+    private void drawPoint(Graphics g,Point p,Color color)
+    {
+        //g.setColor(color.darker().darker().darker().darker()); // señor perdoname por esto 7n7
+        //g.setColor(new Color(255-color.getRed(),255-color.getGreen(),255-color.getBlue())); // negativo del color
+        g.setColor(Color.BLACK);
+        g.drawOval(p.x, p.y, Vertice.diameter, Vertice.diameter);
+        g.setColor(color);
+        g.fillOval(p.x, p.y, Vertice.diameter, Vertice.diameter);
+    }
+    
+    private void drawInfo(Graphics g ,Vertice n)
+    {
+        g.setColor(Color.WHITE);
+        g.drawString((String)n.getData(), n.getLocation().x+5, n.getCenter().y);
+    }
+    
+    //</editor-fold>
+    
+    private void delActualNode(Graphics g)
+    {
+        //Rectangle r = ant_selected.getSpace();
+        //g.clearRect(r.x, r.y, r.width, r.height);
+        grafos.Grafos.grafo.del(ant_selected);
+        ant_selected=null;
+        reloadGraph(map_panel.getGraphics());
+    }
+    
+    private void reloadGraph(Graphics g)
+    {
+        //label_fondo_mapa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/seleccion_mapa.jpg")));
+        //label_fondo_mapa.repaint();
+        map_panel.repaint();
+        java.util.ArrayList<Vertice> nodes = (grafos.Grafos.grafo.getNodes());
+        for (Vertice node : nodes)
+        {
+            drawPoint(g,node.getLocation(),Color.RED);
+            drawInfo(g,node);
+        }
+        java.util.ArrayList<Arco> cons = (grafos.Grafos.grafo.getConnections());
+        for (Arco con : cons)
+        {
+            System.out.println(con);
+            drawConnection(g,con.getStart_point(),con.getEnd_point());
+        }
+        map_panel.requestFocus();
+    }
+    
+    private Vertice ant_selected,   //anterior nodo seleccionado
+                    start,          //inicio de conección
+                    end;            //fin de conección
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -79,5 +283,7 @@ public class Ventana extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel map_panel;
+    private javax.swing.JPanel options_panel;
     // End of variables declaration//GEN-END:variables
 }
