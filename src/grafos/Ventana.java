@@ -8,8 +8,10 @@ package grafos;
 import Objetos.*;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.TrayIcon;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
@@ -23,8 +25,38 @@ public class Ventana extends javax.swing.JFrame {
      */
     public Ventana() {
         initComponents();
+        ponerFondo(new fondo());
     }
 
+    public void ponerFondo(javax.swing.JPanel content) {
+        map_panel.removeAll();
+        map_panel.revalidate();
+        map_panel.repaint();
+        
+        content.setBounds(map_panel.getBounds());
+        content.setVisible(true);
+        content.setLocation(0,0);
+        ((fondo)content).v=this;
+        
+        map_panel.add(content);
+        map_panel.revalidate();
+        map_panel.repaint();
+
+    }
+    
+    public void actualizar_listas()
+    {
+        nodo1_seleccion.removeAllItems();
+        nodo2_seleccion.removeAllItems();
+        java.util.ArrayList<Vertice> nodes = (grafos.Grafos.grafo.getNodes());
+        for (Vertice node : nodes)
+        {
+            nodo1_seleccion.addItem(node.toString());
+            nodo2_seleccion.addItem(node.toString());
+        }
+    }
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -37,31 +69,17 @@ public class Ventana extends javax.swing.JFrame {
 
         map_panel = new javax.swing.JPanel();
         options_panel = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        nodo1_seleccion = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
+        nodo2_seleccion = new javax.swing.JComboBox<>();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        map_panel.addMouseListener(new java.awt.event.MouseAdapter()
-        {
-            public void mousePressed(java.awt.event.MouseEvent evt)
-            {
-                map_panelMousePressed(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt)
-            {
-                map_panelMouseReleased(evt);
-            }
-            public void mouseClicked(java.awt.event.MouseEvent evt)
-            {
-                map_panelMouseClicked(evt);
-            }
-        });
-        map_panel.addKeyListener(new java.awt.event.KeyAdapter()
-        {
-            public void keyTyped(java.awt.event.KeyEvent evt)
-            {
-                map_panelKeyTyped(evt);
-            }
-        });
+        setUndecorated(true);
 
         javax.swing.GroupLayout map_panelLayout = new javax.swing.GroupLayout(map_panel);
         map_panel.setLayout(map_panelLayout);
@@ -74,15 +92,99 @@ public class Ventana extends javax.swing.JFrame {
             .addGap(0, 522, Short.MAX_VALUE)
         );
 
+        options_panel.setBackground(new java.awt.Color(0, 0, 0));
+
+        jPanel1.setBackground(new java.awt.Color(204, 0, 0));
+
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("x");
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                jLabel1MouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
+        );
+
+        jPanel2.setBackground(new java.awt.Color(0, 51, 204));
+        jPanel2.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                jPanel2MouseClicked(evt);
+            }
+        });
+
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setText("Floyd warshall");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addComponent(jLabel4)
+                .addContainerGap(29, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addComponent(jLabel4)
+                .addContainerGap(19, Short.MAX_VALUE))
+        );
+
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Nodo de salida");
+
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("Nodo de llegada");
+
         javax.swing.GroupLayout options_panelLayout = new javax.swing.GroupLayout(options_panel);
         options_panel.setLayout(options_panelLayout);
         options_panelLayout.setHorizontalGroup(
             options_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 178, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, options_panelLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(options_panelLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(options_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(options_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(nodo2_seleccion, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(nodo1_seleccion, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
         options_panelLayout.setVerticalGroup(
             options_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(options_panelLayout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(95, 95, 95)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(nodo1_seleccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(nodo2_seleccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(53, 53, 53)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(154, 154, 154))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -101,150 +203,20 @@ public class Ventana extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void map_panelMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_map_panelMouseClicked
-    {//GEN-HEADEREND:event_map_panelMouseClicked
-        clickOnMap(evt.getPoint());
-        //System.out.println(graphs.Graphs.grafo);
-        map_panel.requestFocus(); //para poder detectar los pressed
-    }//GEN-LAST:event_map_panelMouseClicked
+    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jLabel1MouseClicked
+    {//GEN-HEADEREND:event_jLabel1MouseClicked
+        System.exit(0);
+    }//GEN-LAST:event_jLabel1MouseClicked
 
-    private void map_panelMousePressed(java.awt.event.MouseEvent evt)//GEN-FIRST:event_map_panelMousePressed
-    {//GEN-HEADEREND:event_map_panelMousePressed
-        startConnection(evt.getPoint());
-    }//GEN-LAST:event_map_panelMousePressed
-
-    private void map_panelMouseReleased(java.awt.event.MouseEvent evt)//GEN-FIRST:event_map_panelMouseReleased
-    {//GEN-HEADEREND:event_map_panelMouseReleased
-        endConnection(evt.getPoint());
-    }//GEN-LAST:event_map_panelMouseReleased
-
-    private void map_panelKeyTyped(java.awt.event.KeyEvent evt)//GEN-FIRST:event_map_panelKeyTyped
-    {//GEN-HEADEREND:event_map_panelKeyTyped
-        if(ant_selected!=null)if(evt.getKeyCode()==0)delActualNode(map_panel.getGraphics());
-    }//GEN-LAST:event_map_panelKeyTyped
-
-    //<editor-fold>
-    private void startConnection(Point p)
-    {
-        start = grafos.Grafos.grafo.getNodeAt(p);
-    }
-    
-    private void endConnection(Point p)
-    {
-        end = grafos.Grafos.grafo.getNodeAt(p);
-        if(start!=null && end!=null && (!(start.equals(end))))
-        {
-            grafos.Grafos.grafo.add(new Arco(start,end));
-            drawConnection(map_panel.getGraphics(),start,end);
-        }
-    }
-    
-    private void drawConnection(Graphics g,Vertice s, Vertice e)
-    {
-        g.setColor(Color.BLACK);
-        g.drawLine(s.getCenter().x, s.getCenter().y, e.getCenter().x, e.getCenter().y);
-    }
-    
-    //</editor-fold>
-    
-    //<editor-fold defaultstate="collapsed" desc="CREAR NODO">
-    
-    private void clickOnMap(Point p)
-    {
-        Vertice<String> n = evaluate_colission_box_point(p);
-        if(n==null) createNode(p);
-        else selectNode(n);
-    }
-    
-    private Vertice evaluate_colission_box_point(Point p)
-    {
-        Vertice<String> n = grafos.Grafos.grafo.getNodeAt(p);
-        if(n!=null) return n;
-        n = grafos.Grafos.grafo.getNodeAt(new Point(p.x-Vertice.diameter/2,p.y-Vertice.diameter/2));
-        if(n!=null) return n;
-        n = grafos.Grafos.grafo.getNodeAt(new Point(p.x-Vertice.diameter/2,p.y+Vertice.diameter/2));
-        if(n!=null) return n;
-        n = grafos.Grafos.grafo.getNodeAt(new Point(p.x+Vertice.diameter/2,p.y-Vertice.diameter/2));
-        if(n!=null) return n;
-        n = grafos.Grafos.grafo.getNodeAt(new Point(p.x+Vertice.diameter/2,p.y+Vertice.diameter/2));
-        return n;
-    }
-    private void createNode(Point p)
-    {
-        p= new Point(p.x-(int)(Vertice.diameter/2),p.y-(int)(Vertice.diameter/2)); //ajusta el punto al centro
-        Vertice n = new Vertice<String>(p,JOptionPane.showInputDialog(map_panel,"Nombre de este punto","Nombre",TrayIcon.MessageType.NONE.ordinal()));
-        if(n.getData()!=null)   //se cancelo la creción del nodo
-        {
-            grafos.Grafos.grafo.add(n);
-            drawPoint(map_panel.getGraphics(),p,Color.RED);
-            drawInfo(map_panel.getGraphics(),n);
-        }
-    }
-    
-    private void selectNode(Vertice n)
-    {
-        if(ant_selected!=null)
-        {
-            drawPoint(map_panel.getGraphics(),ant_selected.getLocation(),Color.RED);
-            drawInfo(map_panel.getGraphics(),ant_selected);
-        }
-        drawPoint(map_panel.getGraphics(),n.getLocation(),Color.BLUE);
-        drawInfo(map_panel.getGraphics(),n);
-        ant_selected = n;
-    }
-    
-    private void drawPoint(Graphics g,Point p,Color color)
-    {
-        //g.setColor(color.darker().darker().darker().darker()); // señor perdoname por esto 7n7
-        //g.setColor(new Color(255-color.getRed(),255-color.getGreen(),255-color.getBlue())); // negativo del color
-        g.setColor(Color.BLACK);
-        g.drawOval(p.x, p.y, Vertice.diameter, Vertice.diameter);
-        g.setColor(color);
-        g.fillOval(p.x, p.y, Vertice.diameter, Vertice.diameter);
-    }
-    
-    private void drawInfo(Graphics g ,Vertice n)
-    {
-        g.setColor(Color.WHITE);
-        g.drawString((String)n.getData(), n.getLocation().x+5, n.getCenter().y);
-    }
-    
-    //</editor-fold>
-    
-    private void delActualNode(Graphics g)
-    {
-        //Rectangle r = ant_selected.getSpace();
-        //g.clearRect(r.x, r.y, r.width, r.height);
-        grafos.Grafos.grafo.del(ant_selected);
-        ant_selected=null;
-        reloadGraph(map_panel.getGraphics());
-    }
-    
-    private void reloadGraph(Graphics g)
-    {
-        //label_fondo_mapa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/seleccion_mapa.jpg")));
-        //label_fondo_mapa.repaint();
-        map_panel.repaint();
-        java.util.ArrayList<Vertice> nodes = (grafos.Grafos.grafo.getNodes());
-        for (Vertice node : nodes)
-        {
-            drawPoint(g,node.getLocation(),Color.RED);
-            drawInfo(g,node);
-        }
-        java.util.ArrayList<Arco> cons = (grafos.Grafos.grafo.getConnections());
-        for (Arco con : cons)
-        {
-            System.out.println(con);
-            drawConnection(g,con.getStart_point(),con.getEnd_point());
-        }
-        map_panel.requestFocus();
-    }
-    
-    private Vertice ant_selected,   //anterior nodo seleccionado
-                    start,          //inicio de conección
-                    end;            //fin de conección
+    private void jPanel2MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jPanel2MouseClicked
+    {//GEN-HEADEREND:event_jPanel2MouseClicked
+        Vertice v1 = grafos.Grafos.grafo.searchNode(nodo1_seleccion.getItemAt(nodo1_seleccion.getSelectedIndex()));
+        Vertice v2 = grafos.Grafos.grafo.searchNode(nodo2_seleccion.getItemAt(nodo2_seleccion.getSelectedIndex()));
+        grafos.Grafos.grafo.getFloyd(v1, v2);
+    }//GEN-LAST:event_jPanel2MouseClicked
     
     
     /**
@@ -281,9 +253,18 @@ public class Ventana extends javax.swing.JFrame {
             }
         });
     }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel map_panel;
+    private javax.swing.JComboBox<String> nodo1_seleccion;
+    private javax.swing.JComboBox<String> nodo2_seleccion;
     private javax.swing.JPanel options_panel;
     // End of variables declaration//GEN-END:variables
 }

@@ -6,6 +6,7 @@
 package Objetos;
 
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -14,7 +15,6 @@ import java.util.ArrayList;
  */
 public class Dirigido <T extends Comparable>
 {
-    //<editor-fold defaultstate="collapsed" desc="CONSTRUCTORES">
     public Dirigido(ArrayList<Vertice<T>> nodes, ArrayList<Arco> connections) 
     {
         this.nodes = nodes;
@@ -37,10 +37,7 @@ public class Dirigido <T extends Comparable>
         }
     }
     
-    //</editor-fold>´
     
-    //<editor-fold defaultstate="collapsed" desc="DEFAULT METHODS">
-
     @Override
     public String toString()
     {
@@ -56,8 +53,6 @@ public class Dirigido <T extends Comparable>
     {
         return new Dirigido((ArrayList)(this.nodes.clone()),(ArrayList)(this.connections.clone()));
     }
-    
-    //</editor-fold>
     
     public void add(Vertice<T>... n)
     {
@@ -82,6 +77,15 @@ public class Dirigido <T extends Comparable>
         for (Vertice<T> node : nodes)
         {
             if(node.getSpace().contains(p)) return node;
+        }
+        return null;
+    }
+    
+    public Vertice<T> searchNode(String complete_name)
+    {
+        for (Vertice<T> node : nodes)
+        {
+            if(node.toString().equals(complete_name)) return node;
         }
         return null;
     }
@@ -112,12 +116,106 @@ public class Dirigido <T extends Comparable>
         System.out.println(this);
     }
     
-    //<editor-fold defaultstate="collapsed" desc="ATRBUTOS">
+    public ArrayList<Vertice> getFloyd(Vertice a, Vertice b)
+    {
+        floyd(); // armamos la matriz de adyacencias y de caminos
+        
+        for (int i = 0; i < nodes.size(); i++)
+        {
+            for (int j = 0; j < nodes.size(); j++)
+            {
+                System.out.print(adyacencias[i][j]+" ");
+            }
+            System.out.println("");
+        }
+        
+        for (int i = 0; i < nodes.size(); i++)
+        {
+            for (int j = 0; j < nodes.size(); j++)
+            {
+                System.out.print(caminos[i][j]+" ");
+            }
+            System.out.println("");
+        }
+        
+        
+        System.out.println("vertices "+a+" "+b);
+        
+        int ia=nodes.indexOf(a),ib=nodes.indexOf(b),sumatoria=0;
+        ArrayList<Vertice> camino_minimo = new ArrayList<>();
+        camino_minimo.add(a);
+        boolean terminado=false;
+        Vertice actVert;
+        
+        while(!terminado)
+        {
+            System.out.println(ia+" "+ib);
+            actVert = searchNode(caminos[ia][ib]);
+            System.out.println(actVert);
+            camino_minimo.add(actVert);
+                System.out.println("sumatoria "+sumatoria);
+            sumatoria+=adyacencias[ia][ib];
+            ib=nodes.indexOf(actVert);
+            terminado=b.equals(actVert);
+        }
+        
+        JOptionPane.showMessageDialog(null, "El mínimo costo es de: "+sumatoria+"\nel camino mínimo es:\n"+camino_minimo);
+        return camino_minimo;
+    }
+    
+    public void floyd()
+    {
+        int ady;
+        adyacencias = new int[nodes.size()][nodes.size()];
+        caminos = new int[nodes.size()][nodes.size()];
+        
+        for (int i = 0; i < nodes.size(); i++)
+        {
+            for (int j = 0; j < nodes.size(); j++)
+            {
+                caminos[i][j] = nodes.get(j).id;
+            }
+        }
+        
+        for (int i = 0; i < nodes.size(); i++)
+        {
+            for (int j = 0; j < nodes.size(); j++)
+            {
+                adyacencias[i][j] = 999999999;
+            }
+            adyacencias[i][i]=0;
+        }
+        
+        for (Arco connection : connections)
+        {
+            //adyacencias[nodes.indexOf(connection.getStart_point())][nodes.indexOf(connection.getStart_point())]=connection.getWeight();
+            adyacencias[nodes.indexOf(connection.getEnd_point())][nodes.indexOf(connection.getStart_point())]=connection.getWeight();
+        }
+        
+        for (int k = 0; k < nodes.size(); k++)
+        {
+            for (int i = 0; i < nodes.size(); i++)
+            {
+                for (int j = 0; j < nodes.size(); j++)
+                {
+                    ady=adyacencias[i][j];
+                    adyacencias[i][j]=Math.min(adyacencias[i][j],adyacencias[i][k]+adyacencias[k][j]);
+                    if(adyacencias[i][j]<ady)
+                    {
+                        caminos[i][j] = nodes.get(k).id;
+                    }
+                }
+            }
+        }
+        
+        
+    }
+    
+    int[][] adyacencias,caminos;
+    
     protected java.util.ArrayList<Vertice<T>> nodes;
     protected java.util.ArrayList<Arco> connections;
-    //</editor-fold>
-
-    //<editor-fold defaultstate="collapsed" desc="GT & ST">
+    
     public ArrayList<Vertice<T>> getNodes() {
         return nodes;
     }
@@ -133,5 +231,5 @@ public class Dirigido <T extends Comparable>
     public void setConnections(ArrayList<Arco> connections) {
         this.connections = connections;
     }
-    //</editor-fold>    
+    
 }

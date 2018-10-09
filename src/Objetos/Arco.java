@@ -16,19 +16,19 @@ public class Arco
 {
 
     //<editor-fold defaultstate="collapsed" desc="CONSTRUCTORES">
-    public Arco(Vertice start_point, Vertice end_point)
+    public Arco(Vertice start_point, Vertice end_point,int peso)
     {
         this.start_point = start_point;
         this.end_point = end_point;
         this.start_graphic= start_point.getCenter();
         this.end_graphic = end_point.getCenter();
         this.graph=(start_point.getGraph());
+        this.weight=peso;
     }
 
     public Arco(Vertice start_point, Vertice end_point, int weight, String name)
     {
-        this(start_point,end_point);
-        this.weight = weight;
+        this(start_point,end_point,weight);
         this.name = name;
     }
 

@@ -17,7 +17,6 @@ import java.util.ArrayList;
 public class Vertice <T extends Comparable>
 {
 
-    //<editor-fold defaultstate="collapsed" desc="CONSTRUCTORES">
     public Vertice(T data)
     {
         this.data = data;
@@ -53,9 +52,6 @@ public class Vertice <T extends Comparable>
         this.location = location;
         this.space = space;
     }
-    //</editor-fold>
-    
-    //<editor-fold defaultstate="collapsed" desc="DEFAULT METHODS">
     
     @Override
     public boolean equals(Object ob)
@@ -69,10 +65,6 @@ public class Vertice <T extends Comparable>
     {
         return this.data+" "+this.id;
     }
-    
-    //</editor-fold>
-    
-    //<editor-fold defaultstate="collapsed" desc="ATRIBUTOS">
     private T data;
     private Dirigido graph;
     private java.util.ArrayList<Arco> connections;
@@ -81,9 +73,7 @@ public class Vertice <T extends Comparable>
     public int id;
     private static int actid = 0;
     public static int diameter = 50;
-    //</editor-fold>
-
-    //<editor-fold defaultstate="collapsed" desc="GT & ST">
+    
     public T getData() {
         return data;
     }
@@ -135,7 +125,6 @@ public class Vertice <T extends Comparable>
         return new Point(this.location.x+diameter/2,this.location.y+diameter/2);
     }
     
-    //</editor-fold>
-
+    
     
 }
